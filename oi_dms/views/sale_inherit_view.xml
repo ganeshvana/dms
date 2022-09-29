@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+    <record id="division_name_view" model="ir.ui.view">
+            <field name="name">division.view</field>
+            <field name="model">division</field>
+            <field name="arch" type="xml">
+                <form string="Division Name">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1" domain = "[('is_division', '=',True )] " widget="many2one_tags"/>
+                                <field name="company_ids" required="1" widget="many2many_tags"/>
+                            </group>
+                             <group>
+                                <field name="code" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="division_name_tree" model="ir.ui.view">
+            <field name="name">division.tree</field>
+            <field name="model">division</field>
+            <field name="arch" type="xml">
+                <tree string="Brand Name">
+                    <field name="name"/>
+                    <field name="code"/>  
+                    <field name="company_ids" required="1" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+        <record id="division_action" model="ir.actions.act_window">
+            <field name="name">Division</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">division</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--<menuitem name="Division" id="division_child" parent="sale.menu_sale_config" action="division_action" sequence="4"/>
+         ******************************division Menu***********************
+ -->
+        <record id="division_menus_view" model="ir.ui.view">
+            <field name="name">division_menus.view</field>
+            <field name="model">division.menus</field>
+            <field name="arch" type="xml">
+                <form string="Division Menu">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1" domain = "[('is_division', '=',1 )]" 
+                                    context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': True}"/>
+<!--                                 <field name="company_ids" required="1" widget="many2many_tags"/>
+ -->                            </group>
+                             <group>
+                              <field name="code_no" required="1"  domain = "[('division_code', '=',1 )]" 
+
+                                    context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      <!--   <record id="division_menus_tree" model="ir.ui.view">
+            <field name="name">division_menus.tree</field>
+            <field name="model">devision.menus</field>
+            <field name="arch" type="xml">
+                <tree string="Division Menu">
+                    <field name="name"/>
+                    <field name="code_no"/>
+              </tree>
+            </field>
+        </record> -->
+        <record id="division_menus_action" model="ir.actions.act_window">
+            <field name="name">Division</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">division.menus</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Division" id="division_menus_child" parent="purchase.menu_purchase_config" action="division_menus_action" sequence="3"/>
+
+
+
+<!--         *****************Area Name***********************
+ -->        <record id="area_name_view" model="ir.ui.view">
+            <field name="name">area_name.view</field>
+            <field name="model">area</field>
+            <field name="arch" type="xml">
+                <form string="Area Name">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="company_ids" required="1" widget="many2many_tags"/>
+                            </group>
+                             <group>
+                                <field name="area_code" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="area_name_tree" model="ir.ui.view">
+            <field name="name">area_name.tree</field>
+            <field name="model">area</field>
+            <field name="arch" type="xml">
+                <tree string="Area Name">
+                    <field name="name"/>
+                    <field name="area_code"/>
+					<field name="company_ids" required="1" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+        <record id="area_name_action" model="ir.actions.act_window">
+            <field name="name">Area Name</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">area</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Area" id="area_name_child" parent="sale.menu_sale_config" action="area_name_action" sequence="5"/>
+
+
+
+<!--             *****************Brand Name***************************
+ -->        
+ 		 <record id="brand_name_view" model="ir.ui.view">
+            <field name="name">brand_name.view</field>
+            <field name="model">brand</field>
+            <field name="arch" type="xml">
+                <form string="Brand Name">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="company_ids" required="1" widget="many2many_tags"/>
+                            </group>
+                             <group>
+                                <field name="brand_code" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="brand_name_tree" model="ir.ui.view">
+            <field name="name">brand_name.tree</field>
+            <field name="model">brand</field>
+            <field name="arch" type="xml">
+                <tree string="Brand Name">
+                    <field name="name"/>
+                    <field name="brand_code"/>  
+                    <field name="company_ids" required="1" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+        <record id="brand_name_action" model="ir.actions.act_window">
+            <field name="name">Brand</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">brand</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Brand" id="brand_name_child" parent="sale.menu_sale_config" action="brand_name_action" sequence="7"/>
+
+
+
+        <!--              *****************SubBrand***********************
+ -->         <record id="sub_brand_view" model="ir.ui.view">
+            <field name="name">sub_brand.view</field>
+            <field name="model">sub.brand</field>
+            <field name="arch" type="xml">
+                <form string="Sub Brand">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="company_ids" required="1" widget="many2many_tags"/>
+                            </group>
+                             <group>
+                                <field name="subbrand_code" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="sub_brand_tree" model="ir.ui.view">
+            <field name="name">sub_brand.tree</field>
+            <field name="model">sub.brand</field>
+            <field name="arch" type="xml">
+                <tree string="Sub Brand">
+                    <field name="name"/>
+                    <field name="subbrand_code"/>
+					<field name="company_ids" required="1" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+        <record id="sub_brand_action" model="ir.actions.act_window">
+            <field name="name">Sub Brand</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sub.brand</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Sub Brand" id="sub_brand_child" parent="sale.menu_sale_config" action="sub_brand_action" sequence="8"/>
+    </data>
+</odoo>

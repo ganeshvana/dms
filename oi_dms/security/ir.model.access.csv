@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_area_name_user,access_area_name_user,model_area,base.group_user,1,1,1,1
+access_brand_name_user,access_brand_name_user,model_brand,base.group_user,1,1,1,1
+access_sub_name_user,access_sub_name_user,model_sub_brand,base.group_user,1,1,1,1
+access_division,access_division,model_division,base.group_user,1,1,1,1
+access_division_menus,access_division_menus,model_division_menus,base.group_user,1,1,1,1
+access_res_partner_line,access_res_partner_line,model_res_partner_line,base.group_user,1,1,1,1
+access_product_tax_structure,access_product_tax_structure,model_product_tax_structure,,1,1,1,1
