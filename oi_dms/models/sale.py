@@ -108,7 +108,7 @@ class ProductTemplate(models.Model):
                 if div.subbrand_id:
                     for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
-        self.division_subbrand_ids = [(6,0, subbrand)]  
+            self.division_subbrand_ids = [(6,0, subbrand)]  
         
         
 class ProductTaxStructure(models.Model):
