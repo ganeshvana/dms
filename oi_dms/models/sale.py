@@ -94,9 +94,9 @@ class ProductTemplate(models.Model):
                         brand.append(br.id)
         self.division_brand_ids = [(6,0, brand)] 
         if self.division_id:            
-            for divi in self.division_id:  
-                if divi.subbrand_id:
-                    for sbr in divi.subbrand_id:
+            for div in self.division_id:  
+                if div.subbrand_id:
+                    for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
         self.division_subbrand_ids = [(6,0, subbrand)]   
         
