@@ -63,7 +63,7 @@ class ResCompany(models.Model):
                     for br in divi.brand_id:
                         brand.append(br.id)
         self.division_brand_ids = [(6,0, brand)] 
-        if self.division_id: 
+        if self.division_ids: 
             subbrand = []           
             for div in self.division_id:  
                 if div.subbrand_id:
