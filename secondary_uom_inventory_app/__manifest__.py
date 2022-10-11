@@ -17,7 +17,7 @@ Unit of Measure
 
     ''',
     "license" : "OPL-1",
-    'depends' : ['stock'],
+    'depends' : ['stock', 'sale', 'purchase'],
     'data': [
             'security/ir.model.access.csv',
             'security/secondary_uom_group.xml',
@@ -26,6 +26,8 @@ Unit of Measure
             'views/stock_inventory_view.xml',
             'views/stock_quant_view.xml',
             'views/stock_scrap_view.xml',
+            'views/sale_order_view.xml',
+            'views/purchase_order_view.xml',
             'views/inventory_report_template.xml',
 
              ],
