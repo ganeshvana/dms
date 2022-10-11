@@ -63,12 +63,18 @@ class ResCompany(models.Model):
                     for br in divi.brand_id:
                         brand.append(br.id)
         self.division_brand_ids = [(6,0, brand)] 
-        if self.division_ids:
-            for divi in self.division_ids:  
-                if divi.subbrand_id:
-                    for sbr in divi.subbrand_id:
+        if self.division_id: 
+            subbrand = []           
+            for div in self.division_id:  
+                if div.subbrand_id:
+                    for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
-        self.division_subbrand_ids = [(6,0, subbrand)]   
+            
+            result['domain'] = {
+                    'sub_brand': [('id', 'in', subbrand)]
+                }
+        
+        return result
             
 
 class ProductTemplate(models.Model):
@@ -97,12 +103,10 @@ class ProductTemplate(models.Model):
         if self.division_id: 
             subbrand = []           
             for div in self.division_id:  
-                print(div.subbrand_id, "========")
                 if div.subbrand_id:
                     for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
             
-            print(subbrand, "---------")
             result['domain'] = {
                     'subbrand_id': [('id', 'in', subbrand)]
                 }
@@ -164,12 +168,18 @@ class ContactMaster(models.Model):
                     for br in divi.brand_id:
                         brand.append(br.id)
         self.division_brand_ids = [(6,0, brand)] 
-        if self.division_id:            
-            for divi in self.division_id:  
-                if divi.subbrand_id:
-                    for sbr in divi.subbrand_id:
+        if self.division_id: 
+            subbrand = []           
+            for div in self.division_id:  
+                if div.subbrand_id:
+                    for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
-        self.division_subbrand_ids = [(6,0, subbrand)]   
+            
+            result['domain'] = {
+                    'sub_brand_ids': [('id', 'in', subbrand)]
+                }
+        
+        return result 
     
     
 class PurchaseOrder(models.Model):
