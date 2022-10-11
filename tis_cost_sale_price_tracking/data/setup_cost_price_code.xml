@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <data>
+        <record id="lot_code_data" model="encrypted.code">
+            <field name="name">Lot Code</field>
+            <field name="code_for_zero">a</field>
+            <field name="code_for_one">b</field>
+            <field name="code_for_two">c</field>
+            <field name="code_for_three">d</field>
+            <field name="code_for_four">e</field>
+            <field name="code_for_five">f</field>
+            <field name="code_for_six">g</field>
+            <field name="code_for_seven">h</field>
+            <field name="code_for_eight">i</field>
+            <field name="code_for_nine">j</field>
+        </record>
+    </data>
+
+</odoo>

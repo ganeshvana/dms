@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="barcode_code_form">
+        <field name="name">encrypted.code.form.view</field>
+        <field name="model">encrypted.code</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Barcode code" create="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code_for_zero"/>
+                            <field name="code_for_one"/>
+                            <field name="code_for_two"/>
+                            <field name="code_for_three"/>
+                            <field name="code_for_four"/>
+                            <field name="code_for_five"/>
+                            <field name="code_for_six"/>
+                            <field name="code_for_seven"/>
+                            <field name="code_for_eight"/>
+                            <field name="code_for_nine"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_barcode_code_view">
+        <field name="name">Encrypted Code</field>
+        <field name="res_model">encrypted.code</field>
+        <field name="view_mode">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Create new code
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_barcode_lot_code"
+              parent="stock.menu_stock_config_settings"
+              action="action_barcode_code_view"
+              sequence="200"
+              name="Barcode Code"/>
+</odoo>

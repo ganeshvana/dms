@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_production_lot_form_inherit" model="ir.ui.view">
+        <field name="name">view.production.lot.form.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <!--                <field name="display_complete" invisible="1"/>-->
+                <field name="currency_id" invisible="1"/>
+                <field name="cost_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="sale_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="landed_cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_production_lot_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.production.lot.tree.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='product_id']" position="after">
+                <field name="currency_id" invisible="1"/>
+                <field name="cost_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="sale_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="landed_cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

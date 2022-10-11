@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_margin_analysis_report_user,margin.analysis.report.user,model_margin_analysis_report,base.group_user,1,1,1,1
+access_barcode_setup_stock_user,barcode.setup.stock.user,tis_barcode_paperformat.model_barcode_setup,stock.group_stock_user,1,0,0,0
+access_barcode_setup_stock_manager,barcode.setup.stock.manager,tis_barcode_paperformat.model_barcode_setup,stock.group_stock_manager,1,1,1,0
+access_encrypted_code,encrypted.code.manager,model_encrypted_code,stock.group_stock_manager,1,1,1,0
+access_lot_expiry_user,stock.lot.expiry,model_lot_expiry,stock.group_stock_user,1,0,0,0
+access_lot_expiry_manager,stock.lot.expiry,model_lot_expiry,stock.group_stock_manager,1,1,1,1
+access_stock_production_lot_user,stock.production.lot.user,model_stock_production_lot,stock.group_stock_user,1,0,0,0
+access_stock_production_lot_manager,stock.production.lot.manager,model_stock_production_lot,stock.group_stock_manager,1,1,1,1
+access_stock_lot_barcode_wizard_user,stock.lot.barcode.wizard.user,model_lot_barcode_wizard,stock.group_stock_user,1,0,0,0
+access_stock_lot_barcode_wizard_manager,stock.lot.barcode.wizard.manager,model_lot_barcode_wizard,stock.group_stock_manager,1,1,1,1

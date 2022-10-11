@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record model="ir.ui.view" id="view_sale_order_pivot">
+        <field name="name">margin.analysis.report.pivot</field>
+        <field name="model">margin.analysis.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Margin Analysis">
+                <field name="sale_order_id" type="row"/>
+                <field name="team_id" type="col"/>
+                <field name="untaxed_sale" type="measure"/>
+                <field name="taxed_sale" type="measure"/>
+                <field name="cost_price" type="measure"/>
+                <field name="untaxed_margin" type="measure"/>
+                <field name="taxed_margin" type="measure"/>
+
+            </pivot>
+        </field>
+    </record>
+
+    <record id="margin_analysis_report_graph" model="ir.ui.view">
+        <field name="name">margin.analysis.report.graph</field>
+        <field name="model">margin.analysis.report</field>
+        <field name="arch" type="xml">
+            <graph string="Margin" type="bar">
+                <field name="taxed_margin" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+
+    <record id="action_margin_analysis_report" model="ir.actions.act_window">
+        <field name="name">Margin Analysis</field>
+        <field name="res_model">margin.analysis.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_id"></field>
+    </record>
+
+
+    <record id="view_margin_analysis_search" model="ir.ui.view">
+        <field name="name">margin.analysis.report.search</field>
+        <field name="model">margin.analysis.report</field>
+        <field name="arch" type="xml">
+            <search string="Margin Analysis">
+                <field name="user_id"/>
+                <field name="team_id"/>
+                <field name="product_id"/>
+                <field name="category_id"/>
+                <group expand="0" string="Extended Filters">
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Salesperson" name="User" context="{'group_by':'user_id'}"/>
+                    <filter string="Sales Team" name="sales_channel" context="{'group_by':'team_id'}"/>
+                    <filter string="Product" name="Product" context="{'group_by':'product_id'}"/>
+                    <filter string="Product Category" name="Category" context="{'group_by':'category_id'}"/>
+                    <filter string="Company" name="company" groups="base.group_multi_company"
+                            context="{'group_by':'company_id'}"/>
+                    <separator/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_margin_analysis"
+              name="Margin Analysis"
+              action="action_margin_analysis_report"
+              parent="sale.menu_sale_report"
+              sequence="9"/>
+
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_lot_barcode_document">
+        <t t-foreach="datas" t-as="line">
+            <t t-foreach="int(line.product_qty)" t-as="qty">
+
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <table>
+                            <tr>
+                                <td>
+                                    <t t-esc="line.product_id.name"></t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    LN/SN:
+                                    <span t-field="line.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; vertical-align: middle;" class="col-5">
+                                    <img t-if="line.name"
+                                         t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', line.name, 600, 150)"
+                                         style="width:300px;height:52px;"/>
+                                </td>
+                            </tr>
+                        </table>
+
+             <t t-if="docs.show_sale_price">
+                        <div class="row">
+                            <div class="col-8">
+                                Sale Price:
+                                <span t-field="line.sale_price"
+                                      t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                            </div>
+                            <t t-if="docs.show_cost_price">
+                                <div class="col-4">
+                                    <t t-if="docs.including_landed_cost">
+                                        <span t-esc="line.get_cost_in_code(line.cost_price + line.landed_cost)"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span t-esc="line.get_cost_in_code(line.cost_price)"/>
+                                    </t>
+                                </div>
+
+                            </t>
+                        </div>
+             </t>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+
+    </template>
+
+    <template id="report_lot_barcode">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="tis_cost_sale_price_tracking.report_lot_barcode_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

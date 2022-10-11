@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_expiring_lot">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div style="padding-bottom:50px !important;" class="oe_structure"/>
+                    <div class="row">
+                        <div class="col-3 bm-2">
+                            <strong>Printing Date:</strong>
+                            <p t-esc="datetime.datetime.now().strftime('%Y-%m-%d')" t-options="{'widget': 'date'}" class="m-0"/>
+                        </div>
+                    <div class="col-6">
+                    <h2 align="center">Lot Expiration Report</h2>
+                        </div>
+
+                        <div class="col-3">
+                            <strong>Expire On:</strong><p><span t-esc="expire_on"></span><span t-esc="delay_unit"></span></p>
+                        </div>
+
+
+                        </div>
+                    <br></br>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th name="th_description" class="text-left">Lot/Serial Number</th>
+                                <th name="th_quantity" class="text-right">Internal Reference</th>
+                                <th name="th_priceunit" class="text-right">Product</th>
+                                <th name="th_taxes" class="text-right">Cost Price</th>
+                                <th name="th_taxes" class="text-right">Sale Price</th>
+                                <th name="th_taxes" class="text-right">Landed Cost</th>
+                                <th name="th_taxes" class="text-right">Created on</th>
+                                <th name="th_taxes" class="text-right">Expired on</th>
+                                <!--                        <th name="th_taxes" class="text-right">Expired within</th>-->
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="docs" t-as="o">
+                                <tr>
+                                    <td name="td_name">
+                                        <span t-field="o.name"/>
+                                    </td>
+                                    <td name="td_quantity" class="text-right">
+                                        <span t-field="o.ref"/>
+                                    </td>
+                                    <td name="td_priceunit" class="text-right">
+                                        <span t-field="o.product_id.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="o.cost_price"/>
+                                    </td>
+                                    <td name="td_taxes" class="text-right">
+                                        <span t-field="o.sale_price"/>
+                                    </td>
+                                    <td name="td_taxes" class="text-right">
+                                        <span t-field="o.landed_cost"/>
+                                    </td>
+                                    <td name="td_subtotal" class="text-right o_price_total">
+
+                                        <span t-field="o.create_date"/>
+                                    </td>
+
+                                    <td name="td_section_line" class="text-right" colspan="99">
+                                        <span t-field="o.removal_date"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

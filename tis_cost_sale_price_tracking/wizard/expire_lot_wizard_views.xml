@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_promo_banner_form" model="ir.ui.view">
+        <field name="name">Expire</field>
+        <field name="model">lot.expiry</field>
+        <field name="arch" type="xml">
+            <form string="Expire On">
+                <group>
+                    <group>
+                        <label for="expire_on"/>
+                        <div>
+                            <div class="o_row">
+                                <field name="expire_on"/>
+                                <field name="delay_unit"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group></group>
+                    <footer>
+                        <button name="view_expire_lots" string="Retrieve" type="object" class="btn-primary"/>
+                        <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    </footer>
+                </group>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_production_lot_expiry_form" model="ir.actions.act_window">
+        <field name="name">Lot Expiration Report</field>
+        <field name="res_model">lot.expiry</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem action="action_production_lot_expiry_form" id="menu_action_lot_expiry_form"
+              parent="stock.menu_stock_inventory_control"
+              sequence="101"/>
+</odoo>

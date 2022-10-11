@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_pricelist_item_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form.view.inherit</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[@name='pricelist_rule_target']" position="inside">
+                <span attrs="{'invisible':[('base', '!=', 'lot_with_cost')]}">Lot with cost -</span>
+                <span attrs="{'invisible':[('base', '!=', 'lot_with_cost_and_landed_cost')]}">Lot with Cost and Landed
+                    Cost -
+                </span>
+            </xpath>
+        </field>
+    </record>
+</odoo>

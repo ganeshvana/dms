@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">view.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree" position="inside">
+                <field name="available_lot_id" options="{'no_create': True}" domain="[('product_id', '=', product_id),
+                                     ('remaining_qty', '>=', product_uom_qty),'|',('removal_date', '>',current_date),('removal_date', '=',False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
+
+
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="lot_barcode_wizard_form" model="ir.ui.view">
+        <field name="name">lot_barcode_wizard_form</field>
+        <field name="model">lot.barcode.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Lot Details Barcode">
+                <group>
+                    <field name="show_sale_price"/>
+                    <field name="show_cost_price"/>
+                    <field name="including_landed_cost"/>
+                </group>
+                <footer>
+                    <button string='Print' name="print_barcode" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_barcode_wizard" model="ir.actions.act_window">
+        <field name="name">Print Lot Barcode</field>
+        <field name="res_model">lot.barcode.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

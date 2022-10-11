@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report
+            id="action_report_print_expiring_lot"
+            model="lot.expiry"
+            report_type="qweb-pdf"
+            string="Lot Expiration Report"
+            name="tis_cost_sale_price_tracking.report_expiring_lot"
+            file="tis_cost_sale_price_tracking.report_expiring_lot"
+            menu="False"
+    />
+
+</odoo>

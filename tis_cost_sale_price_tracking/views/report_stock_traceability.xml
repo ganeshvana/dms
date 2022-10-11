@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_stock_inventory_inherit" inherit_id="stock.report_stock_inventory">
+        <xpath expr="//table/thead/tr" position="inside">
+            <th class="o_report_line_header">Cost Price</th>
+            <th class="o_report_line_header">Sale Price</th>
+            <th class="o_report_line_header">Landed Cost</th>
+        </xpath>
+    </template>
+    <template id="report_stock_body_print_inherit" inherit_id="stock.report_stock_body_print">
+        <xpath expr="//table/thead/tr" position="inside">
+            <th class="o_report_line_header">Cost Price</th>
+            <th class="o_report_line_header">Sale Price</th>
+            <th class="o_report_line_header">Landed Cost</th>
+        </xpath>
+    </template>
+</odoo>
