@@ -71,12 +71,7 @@ class ResCompany(models.Model):
                     for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
             
-            result['domain'] = {
-                    'sub_brand': [('id', 'in', subbrand)]
-                }
-        
-        return result
-            
+            self.sub_brand = [(6, 0, subbrand)]
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
