@@ -9,8 +9,7 @@
                 report_type="qweb-pdf"
                 name="tis_cost_sale_price_tracking.report_lot_barcode"
                 file="tis_cost_sale_price_tracking.report_lot_barcode"
-                menu="False"
-                paperformat='tis_barcode_paperformat.paperformat_custom_barcode'
+                menu="False"                
         />
     </data>
 </odoo>

@@ -9,7 +9,7 @@
     'author': 'Technaureus Info Solutions Pvt. Ltd.',
     'sequence': 1,
     'website': 'http://www.technaureus.com/',
-    'depends': ['sale_management', 'stock_landed_costs', 'tis_barcode_paperformat', 'product_expiry'],
+    'depends': ['sale_management', 'stock_landed_costs', 'product_expiry'],
     'summary': 'Sale and Purchase prodcuct tracking with lots',
     'description': """
     This module contains the features to track sale and purchase products with lots.
