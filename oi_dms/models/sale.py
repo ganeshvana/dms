@@ -57,6 +57,7 @@ class ResCompany(models.Model):
     @api.onchange('division_ids')
     def onchange_division_ids(self):
         brand = subbrand = []
+        result = {}
         if self.division_ids:
             for divi in self.division_ids:
                 if divi.brand_id:
@@ -162,6 +163,7 @@ class ContactMaster(models.Model):
     @api.onchange('division_id')
     def onchange_division_id(self):
         brand = subbrand = []
+        result = {}
         if self.division_id:
             for divi in self.division_id:
                 if divi.brand_id:
