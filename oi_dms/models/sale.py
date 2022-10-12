@@ -139,7 +139,7 @@ class ContactMaster(models.Model):
     brand_id = fields.Many2many('brand',string="Brand", copy=False)
     subbrand_id = fields.Many2many('sub.brand',string="Sub Brand", copy=False)
     res_line_ids = fields.One2many('res.partner.line', 'rp_id', string="Distributor")
-
+    discount = fields.Float("Dealer Discount")
 
 class ContactMaster(models.Model):
     _name = "res.partner.line"
@@ -187,7 +187,7 @@ class PurchaseOrder(models.Model):
     transport_name = fields.Char(string="Transport Name", copy=False) 
     mrp_name = fields.Char(string="MRP", copy=False)
     destination = fields.Char(string="Destination", copy=False)
-
+    from_ramraj = fields.Boolean("From Ramraj")
     
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -195,7 +195,10 @@ class StockPicking(models.Model):
     trans_name = fields.Char(related='purchase_id.transport_name',string="Transport Name",copy=False)
     ramraj_ref_no = fields.Char(string="Ramraj Ref NO", copy=False)
     ramraj_ref_date = fields.Date(string="Ramraj Ref date", copy=False)
-
+    from_ramraj = fields.Boolean("From Ramraj")
+    partial = fields.Boolean("Partial")
+    backorder = fields.Boolean("Back Order")
+    cancel = fields.Boolean("Cancel")
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
