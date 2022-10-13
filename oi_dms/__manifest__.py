@@ -7,7 +7,7 @@
     'version': '15.0',
     'author': 'oodu implementers ',
     'description': """""",
-    'depends': ['base', 'sale', 'stock', 'purchase', 'account', 'purchase_discount'],
+    'depends': ['base', 'sale', 'stock', 'purchase', 'account', 'purchase_discount', 'product', 'coupon'],
     'application': True,
     'data': [
         'views/sale_inherit_view.xml',

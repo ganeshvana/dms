@@ -6,6 +6,10 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
+        	<field name="favicon" position="after">
+        		<field name="state_code"/>
+        		<field name="pan"/>
+        </field>
            <field name="favicon" position="after">
                     <field name="area" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
                     <field name="division_ids"  domain = "[('is_division', '=',True )] " widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
@@ -83,11 +87,14 @@
                             <field name="company_ids" widget="many2many_tags" invisible="1"/>
                             <field name="division_ids" widget="many2many_tags" invisible="1"/>                            
                             <field name="distributor_id" domain="[('id', 'in', company_ids)]" options="{'no_create': True, 'no_edit': True}"/> 
-                            <field name="division_id" domain="[('id', 'in', division_ids)]"/>
+                            <field name="division_id" domain="[('id', 'in', division_ids)]" options="{'no_create': True, 'no_edit': True}"/>
                             <field name="division_brand_ids" widget="many2many_tags" invisible="1"/>
                             <field name="division_subbrand_ids" widget="many2many_tags" invisible="1"/>
                             <field name="brand_ids" domain="[('id', 'in', division_brand_ids)]" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
                             <field name="sub_brand_ids" widget="many2many_tags" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="price_list_id" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="promotion_id" options="{'no_create': True, 'no_edit': True}"/>
+                            
                             <field name="company_ids" invisible="1"/>
                         </tree>
                     </field>
@@ -161,6 +168,12 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
          <field name="arch" type="xml">
+         	<field name="partner_id" position="after">
+         		<field name="division_id" domain="[('is_division', '=', True)]" options="{'no_create': True, 'no_edit': True}"/>
+         	</field>
+         	<field name="partner_id" position="attributes">
+         		<attribute name="domain">[('customer_rank','&gt;', 0)]</attribute>
+         	</field>
             <field name="source_id" position="after">
                     <field name="oop_ref_no" readonly="1"/>
                     <field name="oop_order_date" readonly="1"/>                    
@@ -182,7 +195,18 @@
         <field name="name">account.template.form</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
-         <field name="arch" type="xml">            
+         <field name="arch" type="xml">      
+         	 
+         	<!-- <field name="partner_id" position="after">
+         		<field name="partner_id" widget="res_partner_many2one" nolabel="1" 
+         		context="{'res_partner_search_mode': (context.get('default_move_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_move_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False, 'show_address': 1, 'default_is_company': True, 'show_vat': True}" 
+         		options="{&quot;always_reload&quot;: True, &quot;no_quick_create&quot;: True}" 
+         		attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt'))]}" domain="[('customer_rank','&gt;', 0)]"/>
+         		<field name="partner_id" widget="res_partner_many2one" nolabel="1" 
+         		context="{'res_partner_search_mode': (context.get('default_move_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_move_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False, 'show_address': 1, 'default_is_company': True, 'show_vat': True}" 
+         		options="{&quot;always_reload&quot;: True, &quot;no_quick_create&quot;: True}" 
+         		attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}" domain="['|', ('supplier_rank','&gt;', 0),('is_division', '=', True)]"/>
+         	</field>      -->
             <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
                     <field name="product_mrp" optional="show"/>
              </xpath>            
@@ -190,7 +214,7 @@
     </record>
     
     <record id="division_action_customer" model="ir.actions.act_window">
-        <field name="name">Customers</field>
+        <field name="name">Divisions</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form</field>

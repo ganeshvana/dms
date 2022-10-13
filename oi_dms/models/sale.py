@@ -53,6 +53,8 @@ class ResCompany(models.Model):
     distributor_code = fields.Char(string="Distributor Code", copy=False)
     brand = fields.Many2many('brand', string="Brand", copy=False)
     sub_brand = fields.Many2many('sub.brand', string="Sub-Brand", copy=False)
+    pan = fields.Char("Pan")
+    state_code = fields.Char(related='state_id.code')
     
     @api.onchange('division_ids')
     def onchange_division_ids(self):
@@ -153,7 +155,8 @@ class ContactMaster(models.Model):
     company_ids = fields.Many2many(related='rp_id.company_ids')    
     division_brand_ids = fields.Many2many('brand', 'partner_brand_rel', 'partner_id', 'brand_id', "Division Brand")
     division_subbrand_ids = fields.Many2many('sub.brand', 'partner_subbrand_rel', 'partner_id', 'subrand_id', "Division Sub Brand")
-    
+    price_list_id = fields.Many2one('product.pricelist', "Pricelist")
+    promotion_id = fields.Many2one('coupon.program', "Promotion")
     
     @api.onchange('division_id')
     def onchange_division_id(self):
@@ -188,6 +191,7 @@ class PurchaseOrder(models.Model):
     mrp_name = fields.Char(string="MRP", copy=False)
     destination = fields.Char(string="Destination", copy=False)
     from_ramraj = fields.Boolean("From Ramraj")
+    cancel = fields.Boolean("Cancel")
     
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -209,12 +213,34 @@ class SaleOrder(models.Model):
     brand_id_name = fields.Many2one('brand',string="Brand", copy=False)
     subbrand_id_name = fields.Many2one('sub.brand',string="Sub Brand", copy=False)
     from_ramraj = fields.Boolean("From Ramraj")
-
+    division_id = fields.Many2one('res.partner', string="Division", copy=False)
+    
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)            
+        if res.from_ramraj == True:
+            res.action_confirm()
+        return res
+    
 class Accounting(models.Model):
     _inherit = "account.move.line"
 
     product_mrp = fields.Float(related='product_id.list_price',string="MRP", copy=False)
     
+    
+class Move(models.Model):
+    _inherit = "account.move"
+    
+    @api.onchange('move_type')
+    def onchange_move_type(self):
+        if self.move_type:
+            if self.move_type in ['out_invoice', 'out_refund', 'out_receipt']:
+                partner = self.env['res.partner'].search([('customer_rank','>', 0)])
+                return {'domain':{'partner_id': [('id', 'in', partner.ids)]}}
+            if self.move_type in ['in_invoice', 'in_refund', 'in_receipt']:
+                partner = self.env['res.partner'].search(['|',('supplier_rank','>', 0),('is_division', '=', True)])
+                return {'domain':{'partner_id': [('id', 'in', partner.ids)]}}
+
     
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order.line"   
@@ -270,6 +296,16 @@ class SaleOrderLine(models.Model):
                 record.discount_amount = (record.price_unit * record.product_uom_qty) - record.price_subtotal
             else:
                 record.discount_amount = 0.0
+                
+    def create(self, vals):        
+        res = super().create(vals)
+        res.discount = res.order_id.partner_id.discount
+        return res
+    
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if self.partner_id:
+            self.discount = self.partner_id.discount
    
 class StockMoveInherited(models.Model):
     _inherit = "stock.move"
