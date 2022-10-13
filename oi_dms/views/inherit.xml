@@ -137,7 +137,7 @@
             </field> 
              <field name="product_qty" position="before">
                
-                <field name="mrp_name" optional="show"/>
+                <field name="mrp" optional="show"/>
             </field>
 
         </field>

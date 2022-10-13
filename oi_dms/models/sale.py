@@ -245,15 +245,33 @@ class Move(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order.line"   
 
-    mrp_name = fields.Float(related='product_id.list_price', string="MRP", copy=False)
     value_before_discount = fields.Float(string="Value before Discount", compute="_compute_value_before_discount", store=True)
-    discount_amount = fields.Float(compute="_compute_value_before_discount")
+    mrp = fields.Float(related='product_id.list_price', string="MRP",copy=False)
+    discount_amount = fields.Float(compute="_compute_value_before_discount", store=True)
+    unitprice_after_discount = fields.Float("Unit Price After Discount", compute='compute_unit_discount' , store=True)
+    
+    @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
+    def onchange_price_discount(self):
+        if self.price_unit:
+            if self.unitprice_after_discount:
+                if self.product_id.tax_structure_ids:
+                    taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+                    if taxline:
+                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+                        self.taxes_id = fpos.map_tax(taxline.purchase_tax_ids)
+                    else:
+                        taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
+                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+                        self.taxes_id = fpos.map_tax(taxes)
 
-    @api.depends('price_unit', 'product_qty', 'discount')
-    def _compute_total(self):
-        for record in self:
-            record.value_before_discount = ((record.price_unit * record.product_qty) * record.discount) / 100
-
+    @api.depends('price_unit', 'discount')
+    def compute_unit_discount(self):
+        for rec in self:
+            if rec.price_unit and rec.discount > 0:
+                rec.unitprice_after_discount = rec.price_unit - (rec.price_unit * (rec.discount) /100)
+            else:
+                rec.unitprice_after_discount = rec.price_unit
+    
     @api.depends('price_unit', 'product_uom_qty', 'discount', 'price_subtotal')
     def _compute_value_before_discount(self):
         for record in self:
@@ -278,7 +296,12 @@ class SaleOrderLine(models.Model):
                 if self.product_id.tax_structure_ids:
                     taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
                     if taxline:
-                        self.tax_id = [(6,0, taxline.sale_tax_ids.ids)]
+                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+                        self.tax_id = fpos.map_tax(taxline.sale_tax_ids)
+                    else:
+                        taxes = self.product_id.taxes_id.filtered(lambda t: t.company_id == self.env.company)
+                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+                        self.tax_id = fpos.map_tax(taxes)
 
     @api.depends('price_unit', 'discount')
     def compute_unit_discount(self):
