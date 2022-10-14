@@ -76,6 +76,12 @@ class ResCompany(models.Model):
         # self.distributor_code =  subbrand     
         self.division_subbrand_ids = [(6,0, subbrand)]    
         # self.sub_brand = [(6, 0, subbrand)]
+        # if self.division_ids:
+        #     br_list = sbr_list = []
+        #     for rec in self.division_ids:
+        #     if self.brand and self.sub_brand:
+        #         for b in self.brand:
+        #             if b in 
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
@@ -178,12 +184,12 @@ class ContactMaster(models.Model):
                 if div.subbrand_id:
                     for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)        
-            
-            result['domain'] = {
-                    'sub_brand_ids': [('id', 'in', subbrand)]
-                }
-        
-        return result 
+        self.division_subbrand_ids = [(6,0, subbrand)] 
+        #     result['domain'] = {
+        #             'sub_brand_ids': [('id', 'in', subbrand)]
+        #         }
+        #
+        # return result 
     
     
 class PurchaseOrder(models.Model):
