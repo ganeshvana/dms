@@ -71,9 +71,10 @@ class ResCompany(models.Model):
             for div in self.division_ids:  
                 if div.subbrand_id:
                     for sbr in div.subbrand_id:
-                        subbrand.append(sbr.id)        
-            
-            self.sub_brand = [(6, 0, subbrand)]
+                        subbrand.append(sbr.id)  
+        self.distributor_code =  sbr     
+        self.division_subbrand_ids = [(6,0, subbrand)]    
+        # self.sub_brand = [(6, 0, subbrand)]
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
@@ -108,7 +109,9 @@ class ProductTemplate(models.Model):
             result['domain'] = {
                     'subbrand_id': [('id', 'in', subbrand)]
                 }
-        
+        if not self.division_id: 
+            self.brand_id = False
+            self.subbrand_id = False
         return result
         
     @api.onchange('division_id')
@@ -217,7 +220,13 @@ class SaleOrder(models.Model):
     
     @api.model
     def create(self, vals):
-        res = super().create(vals)            
+        res = super().create(vals)  
+        if res.partner_id:
+            if res.partner_id.res_line_ids:
+                lines = res.partner_id.res_line_ids.filtered(lambda m: m.distributor_id == res.company_id and m.division_id == res.division_id)
+                if lines:
+                    res.pricelist_id = lines[0].price_list_id.id
+                    res.update_prices()
         if res.from_ramraj == True:
             res.action_confirm()
         return res

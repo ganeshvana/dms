@@ -21,6 +21,7 @@ Unit of Measure
     'data': [
             'security/ir.model.access.csv',
             'security/secondary_uom_group.xml',
+            'views/account_invoice_view.xml',
             'views/product_view.xml',
             'views/stock_move_view.xml',
             'views/stock_inventory_view.xml',
