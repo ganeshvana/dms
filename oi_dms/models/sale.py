@@ -211,8 +211,15 @@ class StockPicking(models.Model):
     ramraj_ref_date = fields.Date(string="Ramraj Ref date", copy=False)
     from_ramraj = fields.Boolean("From Ramraj")
     partial = fields.Boolean("Partial")
-    backorder = fields.Boolean("Back Order")
+    nobackorder = fields.Boolean("Back Order")
     cancel = fields.Boolean("Cancel")
+    
+    
+    def write(self, vals):
+        if 'cancel' in vals:
+            for rec in self:
+                rec.action_cancel()
+        return super().write(vals)
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
