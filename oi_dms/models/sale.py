@@ -55,6 +55,7 @@ class ResCompany(models.Model):
     sub_brand = fields.Many2many('sub.brand', string="Sub-Brand", copy=False)
     pan = fields.Char("Pan")
     state_code = fields.Char(related='state_id.code')
+    value = fields.Char("")
     
     @api.onchange('division_ids')
     def onchange_division_ids(self):
@@ -72,7 +73,7 @@ class ResCompany(models.Model):
                 if div.subbrand_id:
                     for sbr in div.subbrand_id:
                         subbrand.append(sbr.id)  
-        self.distributor_code =  subbrand     
+        # self.distributor_code =  subbrand     
         self.division_subbrand_ids = [(6,0, subbrand)]    
         # self.sub_brand = [(6, 0, subbrand)]
 
