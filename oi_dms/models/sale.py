@@ -241,7 +241,51 @@ class SaleOrder(models.Model):
 class Accounting(models.Model):
     _inherit = "account.move.line"
 
-    product_mrp = fields.Float(related='product_id.list_price',string="MRP", copy=False)
+    value_before_discount = fields.Float(string="Value before Discount", compute="_compute_value_before_discount", store=True)
+    mrp = fields.Float(related='product_id.list_price', string="MRP",copy=False)
+    discount_amount = fields.Float(compute="_compute_value_before_discount", store=True)
+    unitprice_after_discount = fields.Float("Unit Price After Discount", compute='compute_unit_discount' , store=True)
+    
+    @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
+    def onchange_price_discount(self):
+        if self.price_unit:
+            if self.unitprice_after_discount:
+                if self.product_id.tax_structure_ids:
+                    if self.move_id.move_type in ['out_invoice', 'out_refund','out_receipt']:
+                        taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+                        if taxline:
+                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+                            self.tax_ids = fpos.map_tax(taxline.sale_tax_ids)
+                        else:
+                            taxes = self.product_id.taxes_id.filtered(lambda t: t.company_id == self.env.company)
+                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+                            self.tax_ids = fpos.map_tax(taxes)
+                    if self.move_id.move_type in ['in_invoice', 'in_refund', 'in_receipt']:
+                        taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+                        if taxline:
+                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+                            self.tax_ids = fpos.map_tax(taxline.purchase_tax_ids)
+                        else:
+                            taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
+                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+                            self.tax_ids = fpos.map_tax(taxes)
+                        
+    @api.depends('price_unit', 'discount')
+    def compute_unit_discount(self):
+        for rec in self:
+            if rec.price_unit and rec.discount > 0:
+                rec.unitprice_after_discount = rec.price_unit - (rec.price_unit * (rec.discount) /100)
+            else:
+                rec.unitprice_after_discount = rec.price_unit
+    
+    @api.depends('price_unit', 'quantity', 'discount', 'price_subtotal')
+    def _compute_value_before_discount(self):
+        for record in self:
+            record.value_before_discount = record.price_unit * record.quantity
+            if record.discount > 0:
+                record.discount_amount = (record.price_unit * record.quantity) - record.price_subtotal
+            else:
+                record.discount_amount = 0.0
     
     
 class Move(models.Model):

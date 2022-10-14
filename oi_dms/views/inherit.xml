@@ -208,7 +208,7 @@
          		attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}" domain="['|', ('supplier_rank','&gt;', 0),('is_division', '=', True)]"/>
          	</field>      -->
             <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
-                    <field name="product_mrp" optional="show"/>
+                    <field name="mrp" optional="show"/>
              </xpath>            
         </field>
     </record>
