@@ -402,4 +402,27 @@ class StockMoveInherited(models.Model):
 
     transit_qty = fields.Float('Transit Qty', copy=False)
     transit_sec_qty = fields.Float('Transit Secondary Qty', copy=False)
+  
+class Pricelist(models.Model):
+    _inherit = "product.pricelist"  
+    
+    def _get_partner_pricelist_multi_search_domain_hook(self, company_id):
+        return [
+            ('active', '=', True),
+            
+        ]
+        
+class PricelistItem(models.Model):
+    _inherit = "product.pricelist.item"    
+    
+    def _default_pricelist_id(self):
+        return self.env['product.pricelist'].search([], limit=1)
+
+    product_tmpl_id = fields.Many2one(
+        'product.template', 'Product', ondelete='cascade', check_company=False,
+        help="Specify a template if this rule only applies to one product template. Keep empty otherwise.")
+    product_id = fields.Many2one(
+        'product.product', 'Product Variant', ondelete='cascade', check_company=False,
+        help="Specify a product if this rule only applies to one product. Keep empty otherwise.")
+    
 
