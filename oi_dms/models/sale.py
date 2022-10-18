@@ -243,7 +243,28 @@ class SaleOrder(models.Model):
                     res.update_prices()
         if res.from_ramraj == True:
             res.action_confirm()
+        if res.partner_id:
+            if res.order_line:
+                for line in res.order_line:
+                    line.discount = res.partner_id.discount
         return res
+    
+    @api.onchange('division_id')
+    def onchange_division_id(self):
+        for res in self:
+            if res.division_id:
+                if res.partner_id and res.partner_id.res_line_ids:
+                    lines = res.partner_id.res_line_ids.filtered(lambda m: m.distributor_id == res.company_id and m.division_id == res.division_id)
+                    if lines:
+                        res.pricelist_id = lines[0].price_list_id.id
+                        res.update_prices()
+
+    @api.onchange('partner_id')
+    def onchange_partner(self):
+        if self.partner_id:
+            if self.order_line:
+                for line in self.order_line:
+                    line.discount = self.partner_id.discount
     
 class Accounting(models.Model):
     _inherit = "account.move.line"
