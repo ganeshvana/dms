@@ -257,7 +257,14 @@ class SaleOrder(models.Model):
                     lines = res.partner_id.res_line_ids.filtered(lambda m: m.distributor_id == res.company_id and m.division_id == res.division_id)
                     if lines:
                         res.pricelist_id = lines[0].price_list_id.id
-                        res.update_prices()
+                        res.ensure_one()
+                        for line in res._get_update_prices_lines():
+                            line.product_uom_change()
+                            line.discount = 0  # Force 0 as discount for the cases when _onchange_discount directly returns
+                            line._onchange_discount()
+                        res.show_update_pricelist = False
+                        if any(line.is_reward_line for line in res.order_line):
+                            res.recompute_coupon_lines()
 
     @api.onchange('partner_id')
     def onchange_partner(self):
