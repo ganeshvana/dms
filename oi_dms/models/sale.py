@@ -220,6 +220,49 @@ class StockPicking(models.Model):
             for rec in self:
                 rec.action_cancel()
         return super().write(vals)
+    
+    def button_validate(self):
+        if self.picking_type_code == 'incoming':
+            if self.move_ids_without_package and all([x.quantity_done != 0.0 for x in self.move_ids_without_package]):
+                for mline in self.move_ids_without_package:
+                    if mline.product_id.tracking == 'lot':
+                        if mline.move_line_nosuggest_ids:
+                            for nsl in mline.move_line_nosuggest_ids:
+                                seq = self.env['ir.sequence'].next_by_code('quant.lot') 
+                                nsl.lot_name = seq
+            if self.move_ids_without_package and all([x.quantity_done == 0.0 for x in self.move_ids_without_package]):
+                if self.move_line_ids:
+                    for line in self.move_line_ids:
+                        if line.product_id.tracking == 'lot' and not line.lot_name:
+                            new_lines = []
+                            seq = self.env['ir.sequence'].next_by_code('quant.lot') 
+                            line.lot_name = seq
+                            if line.qty_done == 0.0:
+                                line.qty_done = line.product_uom_qty
+
+        res = super(StockPicking, self).button_validate()
+        if self.picking_type_code == 'incoming':
+            for mline in self.move_ids_without_package:
+                if mline.move_line_nosuggest_ids:
+                    for nsl in mline.move_line_nosuggest_ids:
+                        if nsl.lot_id:
+                            nsl.lot_id.cost_price = nsl.move_id.mrp_price
+                            nsl.lot_id.sale_price = nsl.move_id.sale_price
+                            
+        # if self.picking_type_code == 'outgoing':
+        #     sale_price = 0
+        #     for line in self.move_ids_without_package:
+        #         sale_price = 0
+        #         if line.move_line_nosuggest_ids:
+        #             for msl in line.move_line_nosuggest_ids:
+        #                 if msl.lot_id:
+        #                     if msl.lot_id.sale_price > 0:
+        #                         sale_price += (msl.lot_id.sale_price * msl.qty_done)
+        #                         if msl.move_id:
+        #                             if msl.move_id.sale_line_id:
+        #                                 msl.move_id.sale_line_id.price_unit = sale_price
+        
+        return res   
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -281,29 +324,29 @@ class Accounting(models.Model):
     discount_amount = fields.Float(compute="_compute_value_before_discount", store=True)
     unitprice_after_discount = fields.Float("Unit Price After Discount", compute='compute_unit_discount' , store=True)
     
-    @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
-    def onchange_price_discount(self):
-        if self.price_unit:
-            if self.unitprice_after_discount:
-                if self.product_id.tax_structure_ids:
-                    if self.move_id.move_type in ['out_invoice', 'out_refund','out_receipt']:
-                        taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
-                        if taxline:
-                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
-                            self.tax_ids = fpos.map_tax(taxline.sale_tax_ids)
-                        else:
-                            taxes = self.product_id.taxes_id.filtered(lambda t: t.company_id == self.env.company)
-                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
-                            self.tax_ids = fpos.map_tax(taxes)
-                    if self.move_id.move_type in ['in_invoice', 'in_refund', 'in_receipt']:
-                        taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
-                        if taxline:
-                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
-                            self.tax_ids = fpos.map_tax(taxline.purchase_tax_ids)
-                        else:
-                            taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
-                            fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
-                            self.tax_ids = fpos.map_tax(taxes)
+    # @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
+    # def onchange_price_discount(self):
+    #     if self.price_unit:
+    #         if self.unitprice_after_discount:
+    #             if self.product_id.tax_structure_ids:
+    #                 if self.move_id.move_type in ['out_invoice', 'out_refund','out_receipt']:
+    #                     taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+    #                     if taxline:
+    #                         fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+    #                         self.tax_ids = fpos.map_tax(taxline.sale_tax_ids)
+    #                     else:
+    #                         taxes = self.product_id.taxes_id.filtered(lambda t: t.company_id == self.env.company)
+    #                         fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+    #                         self.tax_ids = fpos.map_tax(taxes)
+    #                 if self.move_id.move_type in ['in_invoice', 'in_refund', 'in_receipt']:
+    #                     taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+    #                     if taxline:
+    #                         fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+    #                         self.tax_ids = fpos.map_tax(taxline.purchase_tax_ids)
+    #                     else:
+    #                         taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
+    #                         fpos = self.move_id.fiscal_position_id or self.move_id.fiscal_position_id.get_fiscal_position(self.partner_id.id)
+    #                         self.tax_ids = fpos.map_tax(taxes)
                         
     @api.depends('price_unit', 'discount')
     def compute_unit_discount(self):
@@ -345,19 +388,19 @@ class PurchaseOrder(models.Model):
     discount_amount = fields.Float(compute="_compute_value_before_discount", store=True)
     unitprice_after_discount = fields.Float("Unit Price After Discount", compute='compute_unit_discount' , store=True)
     
-    @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
-    def onchange_price_discount(self):
-        if self.price_unit:
-            if self.unitprice_after_discount:
-                if self.product_id.tax_structure_ids:
-                    taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
-                    if taxline:
-                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
-                        self.taxes_id = fpos.map_tax(taxline.purchase_tax_ids)
-                    else:
-                        taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
-                        fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
-                        self.taxes_id = fpos.map_tax(taxes)
+    # @api.onchange('unitprice_after_discount', 'price_unit', 'discount')
+    # def onchange_price_discount(self):
+    #     if self.price_unit:
+    #         if self.unitprice_after_discount:
+    #             if self.product_id.tax_structure_ids:
+    #                 taxline = self.product_id.tax_structure_ids.filtered(lambda m: self.unitprice_after_discount >= m.from_amount and self.unitprice_after_discount <= m.to_amount)
+    #                 if taxline:
+    #                     fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+    #                     self.taxes_id = fpos.map_tax(taxline.purchase_tax_ids)
+    #                 else:
+    #                     taxes = self.product_id.supplier_taxes_id.filtered(lambda t: t.company_id == self.env.company)
+    #                     fpos = self.order_id.fiscal_position_id or self.order_id.fiscal_position_id.get_fiscal_position(self.order_partner_id.id)
+    #                     self.taxes_id = fpos.map_tax(taxes)
 
     @api.depends('price_unit', 'discount')
     def compute_unit_discount(self):
@@ -430,6 +473,9 @@ class StockMoveInherited(models.Model):
 
     transit_qty = fields.Float('Transit Qty', copy=False)
     transit_sec_qty = fields.Float('Transit Secondary Qty', copy=False)
+    mrp_price = fields.Float("Lot MRP")
+    sale_price = fields.Float("Lot Sale Price")
+    
   
 class Pricelist(models.Model):
     _inherit = "product.pricelist"  
@@ -453,4 +499,8 @@ class PricelistItem(models.Model):
         'product.product', 'Product Variant', ondelete='cascade', check_company=False,
         help="Specify a product if this rule only applies to one product. Keep empty otherwise.")
     
+class ProductionLot(models.Model):
+    _inherit = 'stock.production.lot'
 
+    cost_price = fields.Float(string='MRP Price', readonly=True)
+    sale_price = fields.Float(string='Sale Price', readonly=True)

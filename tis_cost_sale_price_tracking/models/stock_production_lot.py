@@ -8,7 +8,7 @@ from odoo import api, fields, models, _
 class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
-    cost_price = fields.Float(string='Cost Price', readonly=True)
+    cost_price = fields.Float(string='MRP Price', readonly=True)
     sale_price = fields.Float(string='Sale Price', readonly=True)
     landed_cost = fields.Float(string='Landed Cost', readonly=True)
     remaining_qty = fields.Float('Remaining Quantity', compute='_product_qty', store=True)

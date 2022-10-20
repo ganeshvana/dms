@@ -12,6 +12,7 @@
     'data': [
         'views/sale_inherit_view.xml',
         'views/inherit.xml',
+        'views/sequence.xml',
         'security/ir.model.access.csv',
 
 
